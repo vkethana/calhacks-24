@@ -1,44 +1,54 @@
-
 import yfinance as yf
 from datetime import datetime
+from utils import *
 
-def calculate_trade_profit(ticker, shares, buy_date, sell_date):
-    # Convert date strings to datetime objects
-    buy_date = datetime.strptime(buy_date, "%Y-%m-%d")
-    sell_date = datetime.strptime(sell_date, "%Y-%m-%d")
-    
-    # Create a Ticker object
-    stock = yf.Ticker(ticker)
-    
-    # Fetch historical data
-    hist = stock.history(start=buy_date, end=sell_date)
-    
-    if hist.empty:
-        return "Error: No data available for the specified date range."
-    
-    # Get buy and sell prices
-    buy_price = hist['Close'][0]  # First day's closing price
-    sell_price = hist['Close'][-1]  # Last day's closing price
-    
-    # Calculate profit/loss
-    initial_investment = buy_price * shares
-    final_value = sell_price * shares
-    profit = final_value - initial_investment
-    percent_return = (profit / initial_investment) * 100
-    
-    return {
-        "ticker": ticker,
-        "shares": shares,
-        "buy_date": buy_date.strftime("%Y-%m-%d"),
-        "sell_date": sell_date.strftime("%Y-%m-%d"),
-        "buy_price": round(buy_price, 2),
-        "sell_price": round(sell_price, 2),
-        "initial_investment": round(initial_investment, 2),
-        "final_value": round(final_value, 2),
-        "profit": round(profit, 2),
-        "percent_return": round(percent_return, 2)
-    }
+def calculate_pnl_with_real_data(trades: trades, stock_symbol):
+    """
+    Calculate the realized PnL from a list of trades using real stock price data.
 
-# Example usage
-result = calculate_trade_profit("AAPL", 100, "2019-10-18", "2020-11-09")
-print(result)
+    Args:
+        trades (list of dicts): List of trades. Each trade is a dictionary with
+                                'timestamp', 'action' (buy/sell), 'volume', and 'price'.
+        stock_symbol (str): Stock ticker symbol to fetch historical data for.
+
+    Returns:
+        float: The realized PnL of the trades.
+    """
+    return calculate_pnl(trades, yf)
+    
+    
+def calculate_pnl(trades_obj, stock_data, endDate):
+    # Variables to track cumulative buy and sell information
+    total_buy_volume = 0
+    total_buy_value = 0  # Buy value (volume * price)
+    realized_pnl = 0
+    
+    for trade in trades_obj.trades:
+        action = trade.action
+        volume = trade.volume
+        timestamp = trade.timestamp
+        trade_date = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S').date()
+        
+        # Get the stock price at the time of the trade
+        
+        print(stock_data["Date"], trade_date)
+        if trade_date in stock_data["Date"]:
+            price = stock_data.loc[trade_date]['Close']
+        else:
+            raise ValueError(f"No stock price data available for {trade_date}")
+        
+        # Use the real price to calculate PnL
+        if action == 'buy':
+            total_buy_volume += volume
+            total_buy_value += volume * price
+            
+        elif action == 'sell':
+            if total_buy_volume >= volume:
+                avg_buy_price = total_buy_value / total_buy_volume
+                realized_pnl += volume * (price - avg_buy_price)
+                total_buy_volume -= volume
+                total_buy_value -= volume * avg_buy_price
+            else:
+                raise ValueError("Sell volume exceeds available buy volume.")
+    
+    return realized_pnl
