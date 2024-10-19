@@ -42,7 +42,7 @@ def get_finance_headlines(date, api_key):
     response = requests.get(url, params=params)
     
     if response.status_code != 200:
-        return f"Error: Unable to fetch data. Status code: {response.status_code}"
+        return f"ERROR"
     
     # Parse the JSON response
     data = response.json()
@@ -56,20 +56,21 @@ def get_finance_headlines(date, api_key):
     
     return headlines
 
-# Example usage
-if __name__ == "__main__":
+def fetch_headlines(date):
     # You should replace this with your actual NYT API key
     api_key = os.environ.get("NYT_API_KEY")
     if not api_key:
         print("Please set your NYT API key as an environment variable named NYT_API_KEY")
-        exit(1)
-   
+
     # Iterate through all headlines between 2022-01-01 and 2022-01-07
     # And print results as a JSON
+    headlines = get_finance_headlines(date, api_key)
 
+# Example usage
+if __name__ == "__main__":
     for i in range(1, 8):
         date = datetime(2022, 1, i)
-        headlines = get_finance_headlines(date, api_key)
         print(f"Top finance-related headlines for {date.strftime('%Y-%m-%d')}:")
+        print(fetch_headlines(date))
         # Turn headlines into a JSON string
         print(headlines)
