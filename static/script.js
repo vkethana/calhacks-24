@@ -48,7 +48,10 @@ $(document).ready(function() {
             }),
             success: function(response) {
                 // Display trades
-                const trades = response.trades.trades;
+                console.log("Got back this response from the server")
+                console.log(response)
+                const trades = response.response.trades.trades;
+                console.log(trades)
                 if (trades && trades.length > 0) {
                     trades.forEach(trade => {
                         $('#trades-list').append(`<p>${trade.timestamp} - ${trade.action} ${trade.volume} shares of ${trade.ticker}</p>`);

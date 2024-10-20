@@ -68,7 +68,7 @@ def get_trades_and_pnl():
         pnl_result = calculate_pnl_with_real_data(trades_list, datetime.strptime(evaluation_date, '%Y-%m-%d'))
         print("PnL RESULT", pnl_result)
         print("TRADES DATA", trades_data)
-        return jsonify({
+        return jsonify(response={
             'trades': trades_data,
             'result': pnl_result
         }, headers={
