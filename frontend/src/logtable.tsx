@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Trade } from "./App";
 
 interface TableRow {
-  date: string;
   action: string;
   volume: number;
   stock: string;
@@ -23,7 +22,6 @@ const LogTable = ({ trades }: LogTableProps) => {
           (trade) => trade && trade.action && trade.volume && trade.ticker
         ) // Additional conditions
         .map((trade) => ({
-          date: trade.timestamp,
           action: trade.action,
           volume: trade.volume,
           stock: trade.ticker,
@@ -35,7 +33,6 @@ const LogTable = ({ trades }: LogTableProps) => {
   return (
     <div className="table-container">
       <div className="table-row pinned">
-        <div className="table-cell">Date</div>
         <div className="table-cell">Action</div>
         <div className="table-cell">Volume</div>
         <div className="table-cell">Stock</div>
@@ -43,7 +40,6 @@ const LogTable = ({ trades }: LogTableProps) => {
       </div>
       {rows.map((row, index) => (
         <div className="table-row" key={index}>
-          <div className="table-cell">{row.date}</div>
           <div className="table-cell">{row.action}</div>
           <div className="table-cell">{row.volume}</div>
           <div className="table-cell">{row.stock}</div>
