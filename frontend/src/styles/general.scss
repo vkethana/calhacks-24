@@ -18,7 +18,7 @@ $borderColor: darkgray;
   height: 100vh;
   max-height: 100vh;
   width: 100vw;
-  padding: 30px 20px;
+  padding: 20px 20px;
   max-width: 1600px;
   background-color: $bgColor;
   font-family: "Lekton", sans-serif;
@@ -29,7 +29,7 @@ $borderColor: darkgray;
   grid-template-columns: repeat(1fr, 3);
   grid-template-rows: 1fr 2fr;
   gap: 10px;
-  height: 90%;
+  height: calc(88% - 10px);
   width: 100%;
 
   & .section {
@@ -241,12 +241,15 @@ $borderColor: darkgray;
 
 // Timeline
 .timeline-parent {
-  height: 10%;
+  height: calc(12% - 10px);
   margin: 10px 0;
   border-radius: 5px;
   display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
   background-color: $primary;
-  padding: 10px 10px 0;
+  padding: 0 10px;
 
   & .timeline-component {
     color: $text;
@@ -254,6 +257,34 @@ $borderColor: darkgray;
 
     & .MuiSlider-markLabel {
       color: $text !important;
+    }
+
+    & .MuiSlider-mark[data-index="12"] {
+      background-color: red; // Change tick mark color at value 100
+      width: 10px;
+      height: 10px;
+      border-radius: 10px;
+    }
+  }
+
+  & .player-controls {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+    gap: 15px;
+
+    & .control {
+      cursor: pointer;
+      color: white;
+
+      transition: all 0.3s;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
     }
   }
 }

@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "@mui/material/Slider";
+import { Tooltip, IconButton } from "@mui/material";
+import { getMonthAndDay } from "./util/functions";
+import {
+  faPlay,
+  faArrowsRotate,
+  faPause,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const marks = [
+const monthMarks = [
   {
     value: 0,
     label: "Jan",
@@ -52,23 +60,70 @@ const marks = [
   },
 ];
 
+interface TimelineProps {
+  setDate: React.Dispatch<React.SetStateAction<string>>;
+  setEvalDate: React.Dispatch<React.SetStateAction<string>>;
+}
+
 function valuetext(value: number) {
   return `Day: ${value}`;
 }
 
-const Timeline = () => {
-  const [value, setValue] = useState<number[]>([0, 365]); // Initial range values
-
+const Timeline = ({ setDate, setEvalDate }: TimelineProps) => {
+  const [value, setValue] = useState<number>(0); // Initial range values
+  const [playing, setPlaying] = useState<boolean>(false);
+  const [initState, setInitState] = useState<boolean>(true);
+  const [tradingMarker, setTradingMarker] = useState<number | null>(null); // Track eval date value
   const handleChange = (event: Event, newValue: number | number[]) => {
-    setValue(newValue as number[]);
+    if (typeof newValue === "number") {
+      setValue(newValue);
+    }
   };
+
+  const handleReset = () => {
+    setValue(0);
+    setPlaying(false);
+    setTradingMarker(null);
+    setInitState(true);
+  };
+
+  useEffect(() => {
+    const { month, day } = getMonthAndDay(value);
+    setDate(`2022-${month}-${String(day).padStart(2, "0")}`); // Example for 2023
+  }, [value]);
+
+  useEffect(() => {
+    if (initState) {
+      setTradingMarker(value);
+      setInitState(false);
+    }
+    if (playing) {
+      const { month, day } = getMonthAndDay(value);
+      setEvalDate(`2022-${month}-${String(day).padStart(2, "0")}`);
+      const intervalId = setInterval(() => {
+        if (value <= 365) {
+          setValue((prevValue) => prevValue + 1);
+        }
+      }, 1000); // Increment value every second (1000 ms)
+
+      return () => clearInterval(intervalId);
+    }
+  }, [playing]);
+
+  const marks = [
+    ...monthMarks,
+    ...(tradingMarker !== null
+      ? [{ value: tradingMarker, label: "" }] // Add custom marker
+      : []),
+  ];
 
   return (
     <div className="timeline-parent">
       <Slider
         className="timeline-component"
         aria-label="Custom marks"
-        defaultValue={20}
+        onChange={handleChange}
+        value={value}
         step={1}
         min={0}
         max={365}
@@ -76,6 +131,18 @@ const Timeline = () => {
         valueLabelDisplay="auto"
         marks={marks}
       />
+      <div className="player-controls">
+        <Tooltip title={playing ? "Pause" : "Play"}>
+          <IconButton className="control" onClick={() => setPlaying(!playing)}>
+            <FontAwesomeIcon icon={playing ? faPause : faPlay} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Reset">
+          <IconButton className="control" onClick={handleReset}>
+            <FontAwesomeIcon icon={faArrowsRotate} />
+          </IconButton>
+        </Tooltip>
+      </div>
     </div>
   );
 };

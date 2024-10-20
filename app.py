@@ -7,8 +7,7 @@ from llm_trader import run_llm_trade
 import json
 
 app = Flask(__name__)
-CORS(app)
-
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 # Load news data from the JSON file
 with open('wsj_2022_headlines.json') as news_file:
     news_data = json.load(news_file)
@@ -24,8 +23,11 @@ def get_news():
 
     return jsonify(news_data.get(trading_date, ["ERROR: No news data for " + trading_date]))
 
-@app.route('/api/get_trades_and_pnl', methods=['POST'])
+@app.route('/api/get_trades_and_pnl', methods=['POST', 'OPTIONS'])
 def get_trades_and_pnl():
+    if request.method == 'OPTIONS':
+        return '', 200  # Respond to preflight requests
+
     print("call to get value")
     data = request.get_json()
     trading_date = data.get('trading_date')
@@ -67,6 +69,9 @@ def get_trades_and_pnl():
         })
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error
+        return jsonify({'error': str(e)}), 500  # Return error response
 
 if __name__ == '__main__':
     app.run(debug=True)

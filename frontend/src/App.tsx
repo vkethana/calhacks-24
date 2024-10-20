@@ -18,26 +18,31 @@ export interface Agent {
 }
 
 function App() {
-  const [agents, setAgents] = useState<Agent[]>([
-    { name: "Chat GPT", trades: [], portfolio_total: 0 },
-  ]);
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [trades, setTrades] = useState<Trade[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [date, setDate] = useState<string>("2022-01-01");
+  const [evalDate, setEvalDate] = useState<string>("2022-01-01");
 
   useEffect(() => {
     const fetchTrades = async () => {
-      const fetchedTrades = await fetchApiTrades(); // Get trades from API
+      setIsLoading(true);
+      const fetchedTrades = await fetchApiTrades(date, evalDate); // Get trades from API
       if (fetchedTrades) {
         setTrades(fetchedTrades); // Set trades in state
       }
+      setIsLoading(false);
     };
 
     fetchTrades();
-  }, []);
+    // eslint-disable-next-line no-console
+    console.log(date, evalDate);
+  }, [date, isLoading]);
 
   return (
     <div className="main">
-      <Dashboard agents={agents} />
-      <Timeline />
+      <Dashboard agents={agents} date={date} />
+      <Timeline setDate={setDate} setEvalDate={setEvalDate} />
     </div>
   );
 }
