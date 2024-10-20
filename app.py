@@ -33,8 +33,8 @@ def get_value():
     
     # Run LLM to generate trades based on trading_date and headlines
     trades_data = run_llm_trade(trading_date, trading_history=None, headlines=news_data)
-    print("daddaaa", trades_data)
-    print("daddaaa", trades_data.keys())
+    print("LLM CHOICE", trades_data)
+    # print("daddaaa", trades_data.keys())
     
     
     # Convert incoming trade data to trade objects

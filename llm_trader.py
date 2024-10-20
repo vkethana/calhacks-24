@@ -53,7 +53,7 @@ def run_llm_trade(date, trading_history, headlines):
                     "content": prompt
                 }
             ],
-            model=available_models[0],
+            model=available_models[1],
         )
         res = chat_completion.choices[0].message.content
 
