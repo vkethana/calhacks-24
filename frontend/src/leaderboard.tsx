@@ -8,7 +8,9 @@ interface LeaderboardProps {
 const Leaderboard = ({ data }: LeaderboardProps) => {
   const [rankings, setRankings] = useState<Agent[]>(data);
   useEffect(() => {
-    setRankings(data);
+    // Sort agents by pnl in descending order (highest pnl first)
+    const sortedRankings = [...data].sort((a, b) => b.pnl - a.pnl);
+    setRankings(sortedRankings);
   }, [data]);
 
   return (
@@ -17,7 +19,7 @@ const Leaderboard = ({ data }: LeaderboardProps) => {
         <div className="cell">#</div>
         <div className="cell">Model</div>
         <div className="cell">Change</div>
-        <div className="cell">Portfolio Value</div>
+        <div className="cell">Pnl</div>
       </div>
       {rankings &&
         rankings.map((model, index) => (
