@@ -22,12 +22,12 @@ const CurrLeader = ({ data }: CurrLeaderProps) => {
         <div className="leaderInfo">
           <div className="infoCell">
             <div className="val">
-              {leader && formatToUSCurrency(leader.portfolio_total)}
+              {leader && formatToUSCurrency(leader.pnl)}
             </div>
             <h4 className="subtitle">portfolio total</h4>
           </div>
           <div className="infoCell">
-            <div className="val">+2.1%</div>
+            <div className="val">+/-</div>
             <h4 className="subtitle">% change</h4>
           </div>
         </div>

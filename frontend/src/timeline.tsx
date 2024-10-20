@@ -104,7 +104,7 @@ const Timeline = ({ setDate, setEvalDate }: TimelineProps) => {
         if (value <= 365) {
           setValue((prevValue) => prevValue + 1);
         }
-      }, 2000); // Increment value every second (1000 ms)
+      }, 1500); // Increment value every second (1000 ms)
 
       return () => clearInterval(intervalId);
     }

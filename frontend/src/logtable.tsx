@@ -1,25 +1,12 @@
 import React, { useState, useEffect } from "react";
-import formatToUSCurrency from "./util/functions";
 import { Trade } from "./App";
 
 interface TableRow {
   date: string;
+  action: string;
+  volume: number;
   stock: string;
-  amount: number;
-  total: number;
-  model: string;
-}
-
-const dummyRows: TableRow[] = [];
-for (let i = 1; i <= 10; i++) {
-  const date = new Date(2023, 0, i);
-  dummyRows.push({
-    date: date.toISOString().split("T")[0],
-    stock: "TSLA",
-    amount: 3.21,
-    total: 1400,
-    model: "Chat GPT",
-  });
+  agent: string;
 }
 
 interface LogTableProps {
@@ -30,25 +17,33 @@ const LogTable = ({ trades }: LogTableProps) => {
   const [rows, setRows] = useState<TableRow[]>([]);
 
   useEffect(() => {
-    const newRow = {};
+    setRows(
+      trades.map((trade) => ({
+        date: trade.timestamp,
+        action: trade.action,
+        volume: trade.volume,
+        stock: trade.ticker,
+        agent: "Chat GPT",
+      }))
+    );
   }, [trades]);
 
   return (
     <div className="table-container">
       <div className="table-row pinned">
         <div className="table-cell">Date</div>
+        <div className="table-cell">Action</div>
+        <div className="table-cell">Volume</div>
         <div className="table-cell">Stock</div>
-        <div className="table-cell">Amount</div>
-        <div className="table-cell">Total</div>
-        <div className="table-cell">Model</div>
+        <div className="table-cell">Agent</div>
       </div>
       {rows.map((row, index) => (
         <div className="table-row" key={index}>
           <div className="table-cell">{row.date}</div>
+          <div className="table-cell">{row.action}</div>
+          <div className="table-cell">{row.volume}</div>
           <div className="table-cell">{row.stock}</div>
-          <div className="table-cell">{row.amount}</div>
-          <div className="table-cell">{formatToUSCurrency(row.total)}</div>
-          <div className="table-cell">{row.model}</div>
+          <div className="table-cell">{row.agent}</div>
         </div>
       ))}
     </div>

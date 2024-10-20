@@ -24,13 +24,16 @@ const Headlines = ({ date }: HeadlinesProps) => {
 
   useEffect(() => {}, [headlines]);
   return (
-    <div className="headlines-parent">
-      {headlines &&
-        headlines.map((item, index) => (
-          <div className="headline" key={index}>
-            <h3>{item}</h3>
-          </div>
-        ))}
+    <div>
+      {date && <h2 className="date">{date}</h2>}
+      <div className="headlines-parent">
+        {headlines &&
+          headlines.map((item, index) => (
+            <div className="headline" key={index}>
+              <h3>{item}</h3>
+            </div>
+          ))}
+      </div>
     </div>
   );
 };
