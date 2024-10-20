@@ -9,9 +9,8 @@ available_models = ['llama3-8b-8192', 'llama3-70b-8192', 'mixtral-8x7b-32768', '
 
 # Get the news headlines from fetch_headlines
 def run_llm_trade(date, trading_history, headlines):
-    # Get the news headlines
-    curr_day = datetime.strftime(date, '%Y-%m-%d')
-    headlines = headlines.get(curr_day, [])[:15]
+    # Get the headlines for the given date
+    headlines = headlines.get(date, [])[:15]
 
     prompt = f"""
     You are a stock trading bot tasked with figuring out what stock trades to make. I will give you a list of news headlines, as well as a list of currently-held stocks. Your task is to determine which trades to make in order to maximize profit. You can make as many trades as you like, but your output must be in JSON format as follows:
@@ -63,18 +62,26 @@ def run_llm_trade(date, trading_history, headlines):
         return {
             "error_msg": repr(e)
         }
-
+    # parse res into a json with a try-except block. if
+    # the json parsing fails, return {"error_msg": "error parsing json"}
+    try:
+        res = json.loads(res)
+    except Exception as e:
+        return {
+            "error_msg": "error parsing json"
+        }
     return res
+if __name__ == "__main__":
 
-# convert '2020-01-01' to datetime object
-start_date = datetime.strptime('2022-01-01', '%Y-%m-%d')
-end_date = datetime.strptime('2022-12-31', '%Y-%m-%d')
-#trades = trades('AAPL', start_date, end_date)
-with open('wsj_2022_headlines.json', 'r') as f:
-    headlines = json.load(f)
+    # convert '2020-01-01' to datetime object
+    start_date = datetime.strptime('2022-01-01', '%Y-%m-%d')
+    end_date = datetime.strptime('2022-12-31', '%Y-%m-%d')
+    #trades = trades('AAPL', start_date, end_date)
+    with open('wsj_2022_headlines.json', 'r') as f:
+        headlines = json.load(f)
 
-llm_trade_date = datetime.strptime('2022-01-05', '%Y-%m-%d')
+    llm_trade_date = datetime.strptime('2022-01-05', '%Y-%m-%d')
 
-print(run_llm_trade(llm_trade_date, [], headlines))
-# open up wsj_2022_headlines.json
+    print(run_llm_trade(llm_trade_date, [], headlines))
+    # open up wsj_2022_headlines.json
 
