@@ -70,7 +70,7 @@ function valuetext(value: number) {
 }
 
 const Timeline = ({ setDate, setEvalDate }: TimelineProps) => {
-  const [value, setValue] = useState<number>(0); // Initial range values
+  const [value, setValue] = useState<number>(3); // Initial range values
   const [playing, setPlaying] = useState<boolean>(false);
   const [initState, setInitState] = useState<boolean>(true);
   const [tradingMarker, setTradingMarker] = useState<number | null>(null); // Track eval date value
