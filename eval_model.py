@@ -27,11 +27,11 @@ def calculate_pnl_with_real_data(trade_list: list[trade], endDate: datetime) -> 
         if ticker not in stock_data_dict:
             try:
                 # Attempt to download stock data
-                stock_data = yf.download(ticker, start=start_date, end=(endDate + timedelta(days=1)).strftime('%Y-%m-%d'), valid_only=True)
+                stock_data = yf.download(ticker, start=start_date, end=(endDate + timedelta(days=1)).strftime('%Y-%m-%d'), threads=False)
 
                 # Check if the 'Adj Close' column is present
-                if 'Adj Close' not in stock_data.columns:
-                    print(f"Error: 'Adj Close' column not found for {ticker}. Skipping this ticker.")
+                if 'Close' not in stock_data.columns:
+                    print(f"Error: 'Close' column not found for {ticker}. Skipping this ticker.")
                     continue  # Skip this ticker if 'Adj Close' is missing
 
                 # Ensure the stock data is valid
@@ -40,8 +40,8 @@ def calculate_pnl_with_real_data(trade_list: list[trade], endDate: datetime) -> 
                     continue  # Skip this ticker if no data is returned
                 
                 # Extract relevant data (dates and adjusted close prices)
-                stock_data = stock_data[['Adj Close']].reset_index()
-                stock_data_array = stock_data[['Date', 'Adj Close']].values.tolist()
+                stock_data = stock_data[['Close']].reset_index()
+                stock_data_array = stock_data[['Date', 'Close']].values.tolist()
                 stock_data_dict[ticker] = [[row[0].strftime('%Y-%m-%d'), row[1]] for row in stock_data_array]
 
             except Exception as e:

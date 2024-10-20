@@ -45,7 +45,7 @@ def get_trades_and_pnl():
     
     # Convert incoming trade data to trade objects
     trades_list = []
-    for cur_trade in trades_data["trades"]:
+    for cur_trade in trades_data.get("trades", []):
         print("CUR TRADE", cur_trade)
         if cur_trade.get('action') is None:
             print("NO ACTION")
