@@ -1,21 +1,41 @@
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timedelta
 from utils import *
 import pandas as pd
 
-def calculate_pnl_with_real_data(trades: trades, stock_symbol):
+
+
+def calculate_pnl_with_real_data(trades_obj: trades, endDate: datetime) -> float:
     """
-    Calculate the realized PnL from a list of trades using real stock price data.
+    Calculate the realized PnL from a trades object using real stock price data.
 
     Args:
-        trades (list of dicts): List of trades. Each trade is a dictionary with
-                                'timestamp', 'action' (buy/sell), 'volume', and 'price'.
-        stock_symbol (str): Stock ticker symbol to fetch historical data for.
+        trades_obj (trades): A trades object containing a list of trades.
+        endDate (str): The end date for calculating PnL (format: 'YYYY-MM-DD').
 
     Returns:
         float: The realized PnL of the trades.
     """
-    return calculate_pnl(trades, yf)
+    # Fetch historical stock price data using yfinance
+    stock_data = yf.download(trades_obj.ticker, start=trades_obj.startDate, end=(endDate + timedelta(days=1)).strftime('%Y-%m-%d'))
+    
+    # Ensure the stock data is valid
+    if stock_data.empty:
+        raise ValueError(f"No stock data available for {trades_obj.ticker} in the specified range")
+
+    # Extract relevant data (dates and adjusted close prices)
+    stock_data = stock_data[['Adj Close']].reset_index()  # Only keep adjusted close prices
+
+    # Display the stock data in a readable format
+    print("\nDownloaded Stock Data (Date, Adjusted Close Price):\n")
+    print(stock_data.to_string(index=False, header=["Date", "Adj Close"]))
+
+    # Convert stock data to the format required by `calculate_pnl`
+    stock_data_array = stock_data[['Date', 'Adj Close']].values.tolist()
+    stock_data_for_pnl = [[row[0].strftime('%Y-%m-%d'), row[1]] for row in stock_data_array]
+
+    # Use the existing `calculate_pnl` function
+    return calculate_pnl(trades_obj, stock_data_for_pnl, endDate.strftime('%Y-%m-%d'))
 
 def calculate_pnl(trades_obj, stock_data, endDate):
     """calcualtes pnl given trades, truth, and end date
