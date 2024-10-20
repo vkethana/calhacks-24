@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Agent } from "./App";
 
 interface LeaderboardProps {
@@ -7,6 +7,10 @@ interface LeaderboardProps {
 
 const Leaderboard = ({ data }: LeaderboardProps) => {
   const [rankings, setRankings] = useState<Agent[]>(data);
+  useEffect(() => {
+    setRankings(data);
+  }, [data]);
+
   return (
     <div className="leaderboard-parent">
       <div className="ranking pinned">
