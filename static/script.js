@@ -61,7 +61,7 @@ $(document).ready(function() {
                 }
 
                 // Display PnL
-                const pnl = response.result;
+                const pnl = response.response.result;
                 $('#pnl-result').append(`<p>Total PnL: ${pnl.toFixed(2)}</p>`);
             },
             error: function(xhr) {
