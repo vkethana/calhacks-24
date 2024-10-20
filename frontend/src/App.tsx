@@ -1,12 +1,13 @@
 import React from "react";
-import "./App.css";
 import "./styles/general.scss";
 import Dashboard from "./dashboard";
+import Timeline from "./timeline";
 
 function App() {
   return (
     <div className="main">
       <Dashboard />
+      <Timeline />
     </div>
   );
 }

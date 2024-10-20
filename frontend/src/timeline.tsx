@@ -1,3 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
-const timeline = () => {};
+const Timeline = () => {
+  return <div className="timeline-parent"></div>;
+};
+
+export default Timeline;

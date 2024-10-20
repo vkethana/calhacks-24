@@ -18,21 +18,23 @@ const CurrLeader = ({ data }: CurrLeaderProps) => {
         <h2 className="heading">Current Leader:</h2>
         <h3 className="leaderTitle">{leader ? leader.name : "..."}</h3>
       </div>
-      <div className="leaderInfo">
-        <div className="infoCell">
-          <div className="val">
-            {leader && formatToUSCurrency(leader.portfolio_total)}
+      <div className="infoWrapper">
+        <div className="leaderInfo">
+          <div className="infoCell">
+            <div className="val">
+              {leader && formatToUSCurrency(leader.portfolio_total)}
+            </div>
+            <h4 className="subtitle">portfolio total</h4>
           </div>
-          <h4 className="subtitle">portfolio total</h4>
+          <div className="infoCell">
+            <div className="val">+2.1%</div>
+            <h4 className="subtitle">% change</h4>
+          </div>
         </div>
         <div className="infoCell">
-          <div className="val">+2.1%</div>
-          <h4 className="subtitle">% change</h4>
+          <div className="val desc">SOLD 5.21 Shares TSLA for $12,000</div>
+          <h4 className="subtitle">largest trade</h4>
         </div>
-      </div>
-      <div className="infoCell">
-        <div className="val">SOLD 5.21 Shares TSLA for $12,000</div>
-        <h4 className="subtitle">largest trade</h4>
       </div>
     </div>
   );
