@@ -10,10 +10,22 @@ interface CurrLeaderProps {
 const CurrLeader = ({ data, largestTrade }: CurrLeaderProps) => {
   const first = data[0] ? data[0] : undefined;
   const [leader, setLeader] = useState(first);
+  const [prevPnl, setPrevPnl] = useState<number | null>(null); // Store previous pnl
+  const [percentChange, setPercentChange] = useState<number | null>(null); // Store percent change
 
   useEffect(() => {
     if (data && data.length > 0) {
-      setLeader(data[0]); // Update leader when data changes
+      const newLeader = data[0];
+
+      // Calculate percentage change if previous pnl exists
+      if (prevPnl !== null) {
+        const change = ((newLeader.pnl - prevPnl) / prevPnl) * 100;
+        setPercentChange(change);
+      }
+
+      // Update previous pnl and leader
+      setPrevPnl(newLeader.pnl);
+      setLeader(newLeader);
     }
   }, [data]);
 
@@ -32,7 +44,13 @@ const CurrLeader = ({ data, largestTrade }: CurrLeaderProps) => {
             <h4 className="subtitle">portfolio total</h4>
           </div>
           <div className="infoCell">
-            <div className="val">+/-</div>
+            <div
+              className={`val ${
+                percentChange !== null && percentChange > 0 ? "green" : "red"
+              }`}
+            >
+              {percentChange !== null ? `${percentChange.toFixed(2)}%` : "n/a"}
+            </div>
             <h4 className="subtitle">% change</h4>
           </div>
         </div>

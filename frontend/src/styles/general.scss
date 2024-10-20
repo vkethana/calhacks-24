@@ -75,7 +75,7 @@ $borderColor: darkgray;
 
 .headlines-wrapper {
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .headlines-parent {
@@ -83,7 +83,7 @@ $borderColor: darkgray;
   flex-direction: column;
   gap: 10px;
   overflow: auto;
-  max-height: calc(100% - 40px);
+  max-height: calc(100% - 60px);
 
   & .headline {
     background-color: $secondary;
@@ -194,6 +194,13 @@ $borderColor: darkgray;
 
       &.desc {
         font-size: 16px;
+      }
+
+      &.green {
+        color: rgb(196, 255, 196);
+      }
+      &.red {
+        color: rgb(255, 138, 138);
       }
     }
 
