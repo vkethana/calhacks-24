@@ -12,7 +12,9 @@ const CurrLeader = ({ data, largestTrade }: CurrLeaderProps) => {
   const [leader, setLeader] = useState(first);
 
   useEffect(() => {
-    console.log(leader);
+    if (data && data.length > 0) {
+      setLeader(data[0]); // Update leader when data changes
+    }
   }, [data]);
 
   return (

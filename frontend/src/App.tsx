@@ -73,7 +73,6 @@ function App() {
             ...(updatedAgents[0].trades || []),
             trade, // Append the current trade
           ],
-          pnl: pnl,
         };
       }
       if (trade.volume > largestTrade.volume) {
@@ -82,7 +81,19 @@ function App() {
     });
 
     setAgents(updatedAgents); // Update the agents state once
-  }, [trades, pnl]); // Include 'agents' as a dependency if it can change
+  }, [trades, largestTrade]); // Include 'agents' as a dependency if it can change
+
+  useEffect(() => {
+    if (!agents[0]) return;
+
+    let updatedAgents = [...agents];
+    updatedAgents[0] = {
+      ...updatedAgents[0],
+      pnl: pnl, // Update the agent's pnl whenever pnl changes
+    };
+
+    setAgents(updatedAgents);
+  }, [pnl]); // Trigger update when pnl changes
 
   return (
     <div className="main">
