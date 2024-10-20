@@ -9,7 +9,6 @@ export interface Trade {
   action: string;
   volume: number;
   ticker: string;
-  agent: string;
   pnl: number;
 }
 
@@ -20,22 +19,27 @@ export interface Agent {
 }
 
 function App() {
-  const [agents, setAgents] = useState<Agent[]>([]);
+  const [agents, setAgents] = useState<Agent[]>([
+    {
+      name: "llama-3.1-8b-instant",
+      trades: [],
+      pnl: 0,
+    },
+  ]);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [date, setDate] = useState<string>("2022-01-01");
   const [evalDate, setEvalDate] = useState<string>("2022-01-01");
-  const [rankedAgents, setRankedAgents] = useState<Agent[]>([]);
 
   useMemo(() => {
     const fetchTrades = async () => {
       setIsLoading(true);
       const fetchedTrades = await fetchApiTrades(date, evalDate); // Get trades from API
       if (fetchedTrades) {
-        // eslint-disable-next-line no-console
-        console.log(fetchedTrades);
-        setTrades([...trades, fetchedTrades]); // Set trades in state
+        console.log(fetchedTrades.trades);
+        setTrades([...trades, fetchedTrades.trades]); // Set trades in state
       }
+
       setIsLoading(false);
     };
 
@@ -44,70 +48,29 @@ function App() {
   }, [date, evalDate]);
 
   useEffect(() => {
-    const updatedAgents = [...agents]; // Create a copy of the current agents
+    if (trades.length === 0) return; // Early return if there are no trades
+
+    let updatedAgents = [...agents]; // Create a copy of the current agents
 
     trades.forEach((trade) => {
-      // Check if the agent already exists
-      const existingAgentIndex = updatedAgents.findIndex(
-        (agent) => agent.name === trade.agent
-      );
-
-      if (existingAgentIndex !== -1) {
-        // If the agent exists, update their trades
-        updatedAgents[existingAgentIndex] = {
-          ...updatedAgents[existingAgentIndex],
+      // Check if there are any agents available
+      if (updatedAgents[0]) {
+        updatedAgents[0] = {
+          ...updatedAgents[0],
           trades: [
-            ...(updatedAgents[existingAgentIndex].trades || []),
+            ...(updatedAgents[0].trades || []),
             trade, // Append the current trade
           ],
         };
-      } else {
-        // If the agent does not exist, create a new agent
-        const newAgent = {
-          name: trade.agent,
-          trades: [trade], // Initialize with the current trade
-          pnl: 0,
-        };
-        updatedAgents.push(newAgent); // Add the new agent to the agents array
-
-        const rankedAgents = updatedAgents
-          .map((agent) => {
-            const totalPnL = agent.trades.reduce(
-              (sum, trade) => sum + trade.pnl,
-              0
-            ); // Calculate total PnL
-            return { ...agent, pnl: totalPnL }; // Add total PnL to agent object
-          })
-          .sort((a, b) => b.pnl - a.pnl); // Sort agents by PnL in descending order
-
-        // Update the rankedAgents state with the sorted agents
-        setRankedAgents(rankedAgents);
       }
     });
-    setAgents(updatedAgents);
 
-    const rankedAgents = updatedAgents
-      .map((agent) => {
-        const totalPnL = agent.trades.reduce(
-          (sum, trade) => sum + trade.pnl,
-          0
-        ); // Calculate total PnL
-        return { ...agent, pnl: totalPnL }; // Add total PnL to agent object
-      })
-      .sort((a, b) => b.pnl - a.pnl); // Sort agents by PnL in descending order
-
-    // Update the rankedAgents state with the sorted agents
-    setRankedAgents(rankedAgents);
-  }, [trades]);
+    setAgents(updatedAgents); // Update the agents state once
+  }, [trades]); // Include 'agents' as a dependency if it can change
 
   return (
     <div className="main">
-      <Dashboard
-        agents={agents}
-        rankedAgents={rankedAgents}
-        trades={trades}
-        date={date}
-      />
+      <Dashboard agents={agents} trades={trades} date={date} />
       <Timeline setDate={setDate} setEvalDate={setEvalDate} />
     </div>
   );
