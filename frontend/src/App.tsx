@@ -37,7 +37,7 @@ function App() {
     pnl: 0,
   });
 
-  useMemo(() => {
+  useEffect(() => {
     const fetchTrades = async () => {
       setIsLoading(true);
       const fetchedTrades = await fetchApiTrades(date, evalDate); // Get trades from API
