@@ -17,20 +17,23 @@ with open('wsj_2022_headlines.json') as news_file:
 def index():
     return render_template('index.html')
 
-@app.route('/api/get_value', methods=['POST'])
-def get_value():
+@app.route('/api/get_news', methods=['POST'])
+def get_news():
+    data = request.get_json()
+    trading_date = data.get('trading_date')
+
+    return jsonify(news_data.get(trading_date, ["ERROR: No news data for " + trading_date]))
+
+@app.route('/api/get_trades_and_pnl', methods=['POST'])
+def get_trades_and_pnl():
     print("call to get value")
-    data = request.get_json()   
-    # print(data)
-    # print("A")
+    data = request.get_json()
     trading_date = data.get('trading_date')
     evaluation_date = data.get('evaluation_date')
 
     print("TRADING DATE", trading_date)
     print("EVALUATION DATE", evaluation_date)
-    
-    
-    
+
     # Run LLM to generate trades based on trading_date and headlines
     trades_data = run_llm_trade(trading_date, trading_history=None, headlines=news_data)
     print("LLM CHOICE", trades_data)
@@ -54,8 +57,7 @@ def get_value():
         pnl_result = calculate_pnl_with_real_data(trades_list, datetime.strptime(evaluation_date, '%Y-%m-%d'))
         return jsonify({
             'trades': trades_data,
-            'result': pnl_result,
-            'headlines': news_data.get(trading_date, [])[:15]  # Return headlines for display
+            'result': pnl_result
         })
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
