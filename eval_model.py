@@ -22,31 +22,45 @@ def calculate_pnl_with_real_data(trade_list: list[trade], endDate: datetime) -> 
     for trade in trade_list:
         ticker = trade.ticker  # Get the ticker from the trade object
         start_date = trade.time.strftime('%Y-%m-%d')  # Use the trade date as start date
-        # print("START DATE FOR DATA: ", start_date)
-        # print("END DATE FOR DATA: ", (endDate + timedelta(days=1)).strftime('%Y-%m-%d'))
+        
         # Check if we already fetched data for this ticker
         if ticker not in stock_data_dict:
-            stock_data = yf.download(ticker, start=start_date, end=(endDate + timedelta(days=1)).strftime('%Y-%m-%d'))
-            
-            # print("GOT BACK THE FOLLOWING STOCK DATA", stock_data, ticker)
-            
-            # Ensure the stock data is valid
-            if stock_data.empty:
+            try:
+                # Attempt to download stock data
+                stock_data = yf.download(ticker, start=start_date, end=(endDate + timedelta(days=1)).strftime('%Y-%m-%d'), valid_only=True)
 
-                raise ValueError(f"No stock data available for {ticker} in the specified range")
+                # Check if the 'Adj Close' column is present
+                if 'Adj Close' not in stock_data.columns:
+                    print(f"Error: 'Adj Close' column not found for {ticker}. Skipping this ticker.")
+                    continue  # Skip this ticker if 'Adj Close' is missing
 
-            # Extract relevant data (dates and adjusted close prices)
-            stock_data = stock_data[['Adj Close']].reset_index()
-            stock_data_array = stock_data[['Date', 'Adj Close']].values.tolist()
-            stock_data_dict[ticker] = [[row[0].strftime('%Y-%m-%d'), row[1]] for row in stock_data_array]
+                # Ensure the stock data is valid
+                if stock_data.empty:
+                    print(f"Warning: No stock data available for {ticker} in the specified range.")
+                    continue  # Skip this ticker if no data is returned
+                
+                # Extract relevant data (dates and adjusted close prices)
+                stock_data = stock_data[['Adj Close']].reset_index()
+                stock_data_array = stock_data[['Date', 'Adj Close']].values.tolist()
+                stock_data_dict[ticker] = [[row[0].strftime('%Y-%m-%d'), row[1]] for row in stock_data_array]
+
+            except Exception as e:
+                # Log and skip the ticker if an error occurs (e.g., invalid ticker, delisted, missing data)
+                print(f"Error fetching data for {ticker}: {e}")
+                continue  # Skip this ticker and continue with the next
+
     # Use the existing `calculate_pnl` function for each ticker
     total_pnl = 0.0
     for t in trade_list:
-        print("- IM GONNA PASS IN DATA DICT", stock_data_dict, "for ticker", t.ticker)
-        total_pnl += calculate_pnl([t], stock_data_dict[t.ticker], endDate.strftime('%Y-%m-%d'))
-        
+        if t.ticker in stock_data_dict:  # Ensure data exists for this ticker
+            total_pnl += calculate_pnl([t], stock_data_dict[t.ticker], endDate.strftime('%Y-%m-%d'))
+        else:
+            print(f"Warning: Skipping PnL calculation for {t.ticker} due to missing data.")
+
     print("- FINAL PNL", total_pnl)
     return total_pnl
+
+
 
 def calculate_pnl(trade_list: list[trade], stock_data: list[list], endDate: str) -> float:
     """Calculates PnL given trades, stock price data, and end date.
