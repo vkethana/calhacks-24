@@ -5,7 +5,7 @@ from datetime import datetime
 import json
 
 groq_api_key = os.environ["GROQ_API_KEY"]
-available_models = ['llama-3.1-8b-instant', 'llama3-8b-8192', 'llama3-70b-8192', 'mixtral-8x7b-32768', 'gemma-7b-it']
+available_models = ['llama3-groq-70b-8192-tool-use-preview', 'llama-3.1-8b-instant', 'llama3-8b-8192', 'llama3-70b-8192', 'mixtral-8x7b-32768', 'gemma-7b-it']
 
 # Get the news headlines from fetch_headlines
 def run_llm_trade(date, trading_history, headlines):

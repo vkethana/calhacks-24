@@ -20,7 +20,7 @@ const Dashboard = ({ agents, trades, date }: DashboardProps) => {
       </div>
       <div className="section full-height">
         <h2 className="heading">Buy/Sell Log</h2>
-        <LogTable trades={trades} />
+        <LogTable date={date} trades={trades} />
       </div>
       <div className="section top">
         <CurrLeader data={agents} />
