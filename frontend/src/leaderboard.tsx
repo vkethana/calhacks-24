@@ -20,8 +20,8 @@ const Leaderboard = ({ data }: LeaderboardProps) => {
           <div key={index} className="ranking">
             <div className="cell">{index + 1}</div>
             <div className="cell">{model.name}</div>
-            <div className="cell">+2.1%</div>
-            <div className="cell">{model.portfolio_total}</div>
+            <div className="cell">+/-%</div>
+            <div className="cell">{model.pnl}</div>
           </div>
         ))}
     </div>

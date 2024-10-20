@@ -7,11 +7,7 @@ from llm_trader import run_llm_trade
 import json
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {
-    "origins": "*",
-    "methods": ["GET", "POST", "OPTIONS"],  # Specify allowed methods
-    "allow_headers": ["Content-Type", "Authorization"],  # Specify allowed headers
-}})
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": "*"}})
 # Load news data from the JSON file
 with open('wsj_2022_headlines.json') as news_file:
     news_data = json.load(news_file)

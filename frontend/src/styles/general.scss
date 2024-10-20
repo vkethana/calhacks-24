@@ -66,6 +66,11 @@ $borderColor: darkgray;
   }
 }
 
+// Headlines
+.date {
+  color: $text;
+}
+
 .headlines-parent {
   display: flex;
   flex-direction: column;
