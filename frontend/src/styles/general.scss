@@ -1,0 +1,249 @@
+$bgColor: #243642;
+$primary: #2b595d;
+$secondary: #4b7366;
+$heading: #fff;
+$text: #fff;
+$subtitle: rgb(193, 193, 193);
+$borderColor: darkgray;
+@import url("https://fonts.googleapis.com/css2?family=Lekton:ital,wght@0,400;0,700;1,400&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+.main {
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  padding: 30px 20px;
+  max-width: 1600px;
+  background-color: $bgColor;
+  font-family: "Lekton", sans-serif;
+}
+
+.dashboard-parent {
+  display: grid;
+  grid-template-columns: repeat(1fr, 3);
+  grid-template-rows: 1fr 2fr;
+  gap: 10px;
+  height: 90%;
+  width: 100%;
+
+  & .section {
+    display: flex;
+    flex-direction: column;
+    background-color: $primary;
+    height: 100%;
+    width: 100%;
+    padding: 10px 10px;
+    overflow: hidden;
+    border-radius: 5px;
+
+    &.full-height {
+      grid-column: span 1;
+      grid-row: 1 / span 2;
+    }
+
+    &.top {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    &.bottom {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    & .heading {
+      color: $heading;
+      font-size: 24px;
+      font-weight: normal;
+      margin: 0 0 10px;
+    }
+  }
+}
+
+.headlines-parent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  max-height: calc(100% - 40px);
+
+  & .headline {
+    background-color: $secondary;
+    border-radius: 5px;
+    padding: 3px 5px;
+
+    & h3 {
+      font-size: 16px;
+      color: $heading;
+      font-weight: normal;
+    }
+
+    & p {
+      font-size: 12px;
+      color: $subtitle;
+    }
+  }
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column; /* Stack rows vertically */
+  border: 1px solid $borderColor; /* Optional: Add border around the table */
+  overflow: auto;
+  color: $text;
+  max-height: calc(100% - 40px);
+}
+
+.table-row {
+  display: flex; /* Use flexbox for horizontal alignment */
+  justify-content: flex-start; /* Align items to the left */
+  padding: 10px; /* Add padding for better spacing */
+  border-bottom: 1px solid $borderColor; /* Optional: Add a bottom border between rows */
+  min-width: 100%;
+  width: max-content;
+
+  &.pinned {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: $primary;
+    font-weight: bold;
+  }
+}
+
+.table-cell {
+  flex: 1; /* Equal space for each cell */
+  padding: 0 10px; /* Space between cells */
+  text-align: left; /* Left-align text in each cell */
+  max-height: 20px;
+  width: max-content;
+}
+
+// Curr Leader
+.curr-leader-parent {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  color: $text;
+  gap: 5px;
+
+  & .title-parent {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 0 10px;
+
+    & .heading {
+      margin: 0;
+    }
+
+    & .leaderTitle {
+      background-color: $secondary;
+      border-radius: 5px;
+      font-size: 24px;
+      padding: 3px 5px;
+      width: fit-content;
+    }
+  }
+  & .infoWrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+  & .leaderInfo {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    column-gap: 15px;
+    width: 100%;
+  }
+  & .infoCell {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+
+    & .val {
+      background-color: $secondary;
+      padding: 3px 5px;
+      border-radius: 5px;
+      font-size: 22px;
+      width: fit-content;
+
+      &.desc {
+        font-size: 16px;
+      }
+    }
+
+    & .subtitle {
+      font-weight: normal;
+      font-size: 14px;
+    }
+  }
+}
+
+// Leaderboard
+.leaderboard-parent {
+  display: flex;
+  flex-direction: column; /* Stack rows vertically */
+  overflow: auto;
+  color: $text;
+  max-height: calc(100% - 40px);
+
+  & .ranking {
+    display: flex; /* Use flexbox for horizontal alignment */
+    justify-content: flex-start; /* Align items to the left */
+    padding: 10px; /* Add padding for better spacing */
+    min-width: 100%;
+    width: max-content;
+
+    &.pinned {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: $primary;
+      font-weight: bold;
+      margin-bottom: 10px;
+      border-bottom: 1px solid darkgray;
+    }
+
+    & .cell {
+      padding: 0 5px; /* Space between cells */
+      text-align: left; /* Left-align text in each cell */
+      max-height: 20px;
+      width: max-content;
+
+      &:nth-child(1) {
+        flex: 1;
+      } /* First column takes 2 parts */
+      &:nth-child(2) {
+        flex: 2;
+      } /* Second column takes 1 part */
+      &:nth-child(3) {
+        flex: 2;
+      } /* Third column takes 3 parts */
+      &:nth-child(4) {
+        flex: 2;
+      } /* Fourth column takes 1 part */
+    }
+  }
+}
+
+// Timeline
+.timeline-parent {
+  height: 10%;
+  margin: 10px 0;
+  border-radius: 5px;
+  display: flex;
+  background-color: $primary;
+}
