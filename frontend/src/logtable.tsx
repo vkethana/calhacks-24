@@ -23,7 +23,7 @@ const LogTable = ({ trades }: LogTableProps) => {
         action: trade.action,
         volume: trade.volume,
         stock: trade.ticker,
-        agent: "Chat GPT",
+        agent: "llama-3.1-8b-instant",
       }))
     );
   }, [trades]);

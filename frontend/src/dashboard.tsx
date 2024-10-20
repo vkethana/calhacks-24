@@ -7,12 +7,11 @@ import { Agent, Trade } from "./App";
 
 interface DashboardProps {
   agents: Agent[];
-  rankedAgents: Agent[];
   trades: Trade[];
   date: string;
 }
 
-const Dashboard = ({ agents, rankedAgents, trades, date }: DashboardProps) => {
+const Dashboard = ({ agents, trades, date }: DashboardProps) => {
   return (
     <div className="dashboard-parent">
       <div className="section full-height">
@@ -24,11 +23,11 @@ const Dashboard = ({ agents, rankedAgents, trades, date }: DashboardProps) => {
         <LogTable trades={trades} />
       </div>
       <div className="section top">
-        <CurrLeader data={rankedAgents} />
+        <CurrLeader data={agents} />
       </div>
       <div className="section bottom">
         <h2 className="heading">Leaderboard</h2>
-        <Leaderboard data={rankedAgents} />
+        <Leaderboard data={agents} />
       </div>
     </div>
   );
