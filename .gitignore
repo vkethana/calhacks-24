@@ -132,3 +132,4 @@ dist
 __pycache__
 drudgereport_archives/*
 __pycache__/*
+venv

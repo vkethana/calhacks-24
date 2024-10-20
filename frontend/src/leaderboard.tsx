@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Model } from "./dashboard";
+import { Agent } from "./App";
 
 interface LeaderboardProps {
-  data: Model[];
+  data: Agent[];
 }
 
 const Leaderboard = ({ data }: LeaderboardProps) => {
-  const [rankings, setRankings] = useState<Model[]>(data);
+  const [rankings, setRankings] = useState<Agent[]>(data);
   return (
     <div className="leaderboard-parent">
       <div className="ranking pinned">

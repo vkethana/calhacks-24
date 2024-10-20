@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Model } from "./dashboard";
+import { Agent } from "./App";
 import formatToUSCurrency from "./util/functions";
 
 interface CurrLeaderProps {
-  data: Model[];
+  data: Agent[];
 }
 
 const CurrLeader = ({ data }: CurrLeaderProps) => {

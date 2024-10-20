@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { fetchApiHeadlines } from "./util/functions";
 
 export interface Headline {
   title: string;
   date: string | Date;
 }
 
-const dummyHeadlines: Headline[] = [];
-for (let i = 1; i <= 10; i++) {
-  const date = new Date(2023, 0, i);
-  dummyHeadlines.push({
-    title: `Headline ${i}`,
-    date: date.toISOString().split("T")[0],
-  });
-}
-
 const Headlines = () => {
-  const [headlines, setHeadlines] = useState<Headline[]>(dummyHeadlines);
+  const [headlines, setHeadlines] = useState<Headline[]>([]);
+
+  useEffect(() => {
+    const fetchHeadlines = async () => {
+      const fetchedTrades = await fetchApiHeadlines(); // Get trades from API
+      if (fetchedTrades) {
+        setHeadlines(fetchedTrades); // Set trades in state
+      }
+    };
+
+    fetchHeadlines();
+  }, []);
 
   useEffect(() => {}, [headlines]);
   return (
