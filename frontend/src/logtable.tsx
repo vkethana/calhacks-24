@@ -18,13 +18,17 @@ const LogTable = ({ trades }: LogTableProps) => {
 
   useEffect(() => {
     setRows(
-      trades.map((trade) => ({
-        date: trade.timestamp,
-        action: trade.action,
-        volume: trade.volume,
-        stock: trade.ticker,
-        agent: "llama-3.1-8b-instant",
-      }))
+      trades
+        .filter(
+          (trade) => trade && trade.action && trade.volume && trade.ticker
+        ) // Additional conditions
+        .map((trade) => ({
+          date: trade.timestamp,
+          action: trade.action,
+          volume: trade.volume,
+          stock: trade.ticker,
+          agent: "llama-3.1-8b-instant",
+        }))
     );
   }, [trades]);
 

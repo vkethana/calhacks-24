@@ -35,16 +35,18 @@ function App() {
     const fetchTrades = async () => {
       setIsLoading(true);
       const fetchedTrades = await fetchApiTrades(date, evalDate); // Get trades from API
-      if (fetchedTrades) {
-        console.log(fetchedTrades.trades);
-        setTrades([...trades, fetchedTrades.trades]); // Set trades in state
+      if (fetchedTrades && fetchedTrades.response) {
+        console.log(fetchedTrades.response.trades.trades);
+        setTrades((prevTrades) => [
+          ...prevTrades,
+          ...fetchedTrades.response.trades.trades,
+        ]); // Append fetched trades to the existing trades
       }
 
       setIsLoading(false);
     };
 
     fetchTrades();
-    // eslint-disable-next-line no-console
   }, [date, evalDate]);
 
   useEffect(() => {

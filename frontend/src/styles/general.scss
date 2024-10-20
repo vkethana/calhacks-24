@@ -70,6 +70,12 @@ $borderColor: darkgray;
 // Headlines
 .date {
   color: $text;
+  display: inline-flex;
+}
+
+.headlines-wrapper {
+  height: 100%;
+  overflow: hidden;
 }
 
 .headlines-parent {
