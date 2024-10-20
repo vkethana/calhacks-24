@@ -1,4 +1,5 @@
-import yfinance as yf
+# import yfinance as yf
+import yfinance_cache as yf
 from datetime import datetime, timedelta
 import pandas as pd
 from utils import trade  # Assuming trade class is defined in utils
