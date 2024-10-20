@@ -72,7 +72,7 @@ function App() {
 
   return (
     <div className="main">
-      <Dashboard agents={agents} trades={trades} date={date} />
+      <Dashboard agents={agents} trades={trades} date={evalDate} />
       <Timeline setDate={setDate} setEvalDate={setEvalDate} />
     </div>
   );
