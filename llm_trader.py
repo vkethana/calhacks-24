@@ -20,7 +20,7 @@ def run_llm_trade(date, trading_history, headlines):
         {{
           "action": "BUY" or "SELL",
           "ticker": "STOCK_TICKER",
-          "quantity": NUMBER_OF_SHARES
+          "volume": NUMBER_OF_SHARES
         }},
         ...
       ],
@@ -39,6 +39,8 @@ def run_llm_trade(date, trading_history, headlines):
 
     Now please output your trades using the JSON format described above! Your output is going to get parsed by a Python script, so it's very important that you conform to the above format, otherwise your trades won't get executed. Remember to include your reasoning in the "reasoning" field of the JSON object. Please do NOT output anything besides the JSON output I just described. No introduction or conclusion messages, just the JSON output. Good luck!
     """
+    
+    print("PROMPT", prompt)
 
     res = ""
     try:

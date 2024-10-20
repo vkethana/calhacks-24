@@ -43,8 +43,11 @@ def get_trades_and_pnl():
     # Convert incoming trade data to trade objects
     trades_list = []
     for cur_trade in trades_data["trades"]:
+        print("CUR TRADE", cur_trade)
         if cur_trade.get('action') is None:
+            print("NO ACTION")
             continue
+        
         timestamp = trading_date
         action = cur_trade.get('action')
         volume = cur_trade.get('volume')
@@ -54,7 +57,10 @@ def get_trades_and_pnl():
 
     # Calculate the result based on the evaluation date and trades
     try:
+        print("TRADES LIST", trades_list)
         pnl_result = calculate_pnl_with_real_data(trades_list, datetime.strptime(evaluation_date, '%Y-%m-%d'))
+        print("PnL RESULT", pnl_result)
+        print("TRADES DATA", trades_data)
         return jsonify({
             'trades': trades_data,
             'result': pnl_result

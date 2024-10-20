@@ -9,4 +9,7 @@ class trade:
         self.ticker = ticker
 
     def __str__(self):
-        return f"timestamp: {self.timestamp}, action: {self.action}, volume: {self.volume}"
+        return f"timestamp: {self.time}, action: {self.action}, volume: {self.volume}"
+    
+    def __repr__(self):
+        return f"timestamp: {self.time}, action: {self.action}, volume: {self.volume}"

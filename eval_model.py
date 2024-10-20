@@ -93,10 +93,10 @@ def calculate_pnl(trade_list: list[trade], stock_data: list[list], endDate: str)
             raise ValueError(f"No stock price data available for {time}")
 
         # Calculate the unrealized PnL
-        if action == 'buy':
+        if action.lower() == 'buy':
             print("currently addressing buy command")
             total_unrealized_pnl += (end_date_price - trade_price) * volume  # Loss if sold at end price
-        elif action == 'sell':
+        elif action.lower() == 'sell':
             print("currently addressing sell commands")
             total_unrealized_pnl -= (end_date_price - trade_price) * volume  # Gain if sold at end price
 

@@ -6,7 +6,7 @@ function sendDate() {
     const ticker = tickerInput.value;
 
     // Send the selected date and ticker to the backend
-    fetch('/api/get_value', {
+    fetch('/api/get_trades_and_pnl', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -16,6 +16,7 @@ function sendDate() {
     .then(response => response.json())
     .then(data => {
         document.getElementById('result').textContent = data.result;
+        document.getElementById('trades').textContent = data.trades;
     })
     .catch((error) => {
         console.error('Error:', error);
