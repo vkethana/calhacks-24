@@ -8,10 +8,11 @@ import { Agent, Trade } from "./App";
 interface DashboardProps {
   agents: Agent[];
   trades: Trade[];
+  largestTrade: Trade;
   date: string;
 }
 
-const Dashboard = ({ agents, trades, date }: DashboardProps) => {
+const Dashboard = ({ agents, trades, largestTrade, date }: DashboardProps) => {
   return (
     <div className="dashboard-parent">
       <div className="section full-height">
@@ -23,7 +24,7 @@ const Dashboard = ({ agents, trades, date }: DashboardProps) => {
         <LogTable date={date} trades={trades} />
       </div>
       <div className="section top">
-        <CurrLeader data={agents} />
+        <CurrLeader data={agents} largestTrade={largestTrade} />
       </div>
       <div className="section bottom">
         <h2 className="heading">Leaderboard</h2>

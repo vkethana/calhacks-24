@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Agent } from "./App";
+import { Agent, Trade } from "./App";
 import formatToUSCurrency from "./util/functions";
 
 interface CurrLeaderProps {
   data: Agent[];
+  largestTrade: Trade;
 }
 
-const CurrLeader = ({ data }: CurrLeaderProps) => {
+const CurrLeader = ({ data, largestTrade }: CurrLeaderProps) => {
   const first = data[0] ? data[0] : undefined;
   const [leader, setLeader] = useState(first);
 
-  useEffect(() => {}, [data]);
+  useEffect(() => {
+    console.log(leader);
+  }, [data]);
 
   return (
     <div className="curr-leader-parent">
@@ -32,7 +35,11 @@ const CurrLeader = ({ data }: CurrLeaderProps) => {
           </div>
         </div>
         <div className="infoCell">
-          <div className="val desc">SOLD 5.21 Shares TSLA for $12,000</div>
+          <div className="val desc">
+            {largestTrade
+              ? `${largestTrade.action} ${largestTrade.volume} ${largestTrade.ticker} shares`
+              : "..."}
+          </div>
           <h4 className="subtitle">largest trade</h4>
         </div>
       </div>
