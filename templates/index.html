@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Slider</title>
+</head>
+<body>
+    <h1>Select a Date and Ticker</h1>
+    
+    <!-- Input for selecting a ticker -->
+    <label for="ticker-input">Ticker:</label>
+    <input type="text" id="ticker-input" value="AAPL">
+
+    <!-- Date input slider -->
+    <label for="date-slider">Select Date:</label>
+    <input type="date" id="date-slider" value="2023-12-12" min="2023-01-01" max="2024-12-31">
+
+    <!-- Submit button -->
+    <button onclick="sendDate()">Submit</button>
+
+    <!-- Display the result -->
+    <h2>Result: <span id="result">N/A</span></h2>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
