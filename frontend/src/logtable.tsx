@@ -27,6 +27,7 @@ const LogTable = ({ trades }: LogTableProps) => {
           stock: trade.ticker,
           agent: "llama-3.1-8b-instant",
         }))
+        .reverse()
     );
   }, [trades]);
 

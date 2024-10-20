@@ -35,8 +35,7 @@ function App() {
     const fetchTrades = async () => {
       setIsLoading(true);
       const fetchedTrades = await fetchApiTrades(date, evalDate); // Get trades from API
-      if (fetchedTrades && fetchedTrades.response) {
-        console.log(fetchedTrades.response.trades.trades);
+      if (fetchedTrades && fetchedTrades.response.trades.trades) {
         setTrades((prevTrades) => [
           ...prevTrades,
           ...fetchedTrades.response.trades.trades,
