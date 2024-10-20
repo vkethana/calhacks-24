@@ -246,4 +246,14 @@ $borderColor: darkgray;
   border-radius: 5px;
   display: flex;
   background-color: $primary;
+  padding: 10px 10px 0;
+
+  & .timeline-component {
+    color: $text;
+    margin: 0 20px;
+
+    & .MuiSlider-markLabel {
+      color: $text !important;
+    }
+  }
 }
