@@ -36,6 +36,16 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to set default date inputs to specific dates
+        $(document).ready(function() {
+            let defaultTradingDate = '2022-07-07';  // Default trading date: July 7, 2022
+            let defaultEvaluationDate = '2022-08-08';  // Default evaluation date: August 8, 2022
+
+            $('#trading_date').val(defaultTradingDate);  // Set the default trading date
+            $('#evaluation_date').val(defaultEvaluationDate);  // Set the default evaluation date
+        });
+    </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
