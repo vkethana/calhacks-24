@@ -1,26 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 from flask_cors import CORS
-import yfinance as yf
 from utils import trade
 from eval_model import calculate_pnl_with_real_data
 
 app = Flask(__name__)
 CORS(app)
-
-# Function to calculate PnL using the buy date and selected end date
-def calculate_value_from_date(date_str, ticker):
-    end_date = datetime.strptime(date_str, '%Y-%m-%d')  # Use selected date from slider
-
-    # Create trades object with sample trades
-    trades = []
-    trades.append(trade('2023-12-01 00:00:00', 'buy', 1, 'AAPL'))  # Buy 1 shares on December 1
-    trades.append(trade('2023-12-05 00:00:00', 'sell', 1, 'TSLA'))
-    trades.append(trade('2023-12-12 00:00:00', 'buy', 1, 'TSLA'))
-    trades.append(trade('2023-12-14 00:00:00', 'sell', 1, 'AAPL'))
-
-    # Call the function to calculate PnL using real stock data
-    return calculate_pnl_with_real_data(trades, end_date)
 
 @app.route('/')
 def index():
@@ -30,11 +15,21 @@ def index():
 def get_value():
     data = request.get_json()
     selected_date = data.get('selected_date')
-    ticker = data.get('ticker', 'AAPL')  # Default ticker symbol if not provided
+    trades_data = data.get('trades', [])
 
-    # Calculate the result based on selected date and ticker
+    # Convert incoming trade data to trade objects
+    trades_list = []
+    for trade_data in trades_data:
+        timestamp = trade_data.get('timestamp')
+        action = trade_data.get('action')
+        volume = trade_data.get('volume')
+        ticker = trade_data.get('ticker', 'AAPL')  # Default ticker symbol if not provided
+        new_trade = trade(datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S'), action, volume, ticker)
+        trades_list.append(new_trade)
+
+    # Calculate the result based on selected date and trades
     try:
-        result = calculate_value_from_date(selected_date, ticker)
+        result = calculate_pnl_with_real_data(trades_list, datetime.strptime(selected_date, '%Y-%m-%d'))
         return jsonify({'result': result})
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
