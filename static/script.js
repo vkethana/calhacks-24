@@ -1,24 +1,70 @@
-function sendDate() {
-    const dateSlider = document.getElementById('date-slider');
-    const selectedDate = dateSlider.value;
+$(document).ready(function() {
+    $('#submit').click(function() {
+        const tradingDate = $('#trading_date').val();
+        const evaluationDate = $('#evaluation_date').val();
 
-    const tickerInput = document.getElementById('ticker-input');
-    const ticker = tickerInput.value;
+        // Clear previous results
+        $('#trades-list').empty();
+        $('#headlines').empty();
+        $('#pnl-result').empty();
 
-    // Send the selected date and ticker to the backend
-    fetch('/api/get_trades_and_pnl', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ selected_date: selectedDate, ticker: ticker }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('result').textContent = data.result;
-        document.getElementById('trades').textContent = data.trades;
-    })
-    .catch((error) => {
-        console.error('Error:', error);
+        // Fetch the news for the selected trading date
+        $.ajax({
+            url: '/api/get_news',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                trading_date: tradingDate
+            }),
+            success: function(newsResponse) {
+                // Display headlines
+                if (newsResponse.length > 0) {
+                    newsResponse.forEach(headline => {
+                        $('#headlines').append(`<p>${headline}</p>`);
+                    });
+                } else {
+                    $('#headlines').append('<p>No headlines found.</p>');
+                }
+
+                // After getting the news, fetch trades and PnL
+                getTradesAndPnL(tradingDate, evaluationDate);
+            },
+            error: function(xhr) {
+                const errorMsg = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred while fetching news.';
+                alert(`Error: ${errorMsg}`);
+            }
+        });
     });
-}
+
+    // Function to get trades and PnL
+    function getTradesAndPnL(tradingDate, evaluationDate) {
+        $.ajax({
+            url: '/api/get_trades_and_pnl',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                trading_date: tradingDate,
+                evaluation_date: evaluationDate
+            }),
+            success: function(response) {
+                // Display trades
+                const trades = response.trades.trades;
+                if (trades && trades.length > 0) {
+                    trades.forEach(trade => {
+                        $('#trades-list').append(`<p>${trade.timestamp} - ${trade.action} ${trade.volume} shares of ${trade.ticker}</p>`);
+                    });
+                } else {
+                    $('#trades-list').append('<p>No trades generated.</p>');
+                }
+
+                // Display PnL
+                const pnl = response.result;
+                $('#pnl-result').append(`<p>Total PnL: ${pnl.toFixed(2)}</p>`);
+            },
+            error: function(xhr) {
+                const errorMsg = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred while fetching trades and PnL.';
+                alert(`Error: ${errorMsg}`);
+            }
+        });
+    }
+});
