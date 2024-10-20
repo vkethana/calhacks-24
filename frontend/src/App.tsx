@@ -86,7 +86,12 @@ function App() {
 
   return (
     <div className="main">
-      <Dashboard agents={agents} trades={trades} date={evalDate} />
+      <Dashboard
+        agents={agents}
+        trades={trades}
+        largestTrade={largestTrade}
+        date={evalDate}
+      />
       <Timeline setDate={setDate} setEvalDate={setEvalDate} />
     </div>
   );
