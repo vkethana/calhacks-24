@@ -52,6 +52,7 @@ def calculate_pnl_with_real_data(trade_list: list[trade], endDate: datetime) -> 
     # Use the existing `calculate_pnl` function for each ticker
     total_pnl = 0.0
     for t in trade_list:
+        print("currently addressing ticker", t.ticker)
         if t.ticker in stock_data_dict:  # Ensure data exists for this ticker
             total_pnl += calculate_pnl([t], stock_data_dict[t.ticker], endDate.strftime('%Y-%m-%d'))
         else:
