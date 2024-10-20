@@ -1,16 +1,21 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime, timedelta
 from flask_cors import CORS
+from utils import *
+from eval_model import calculate_pnl_with_real_data
 
 app = Flask(__name__)
 CORS(app)
 
 # Simple function to simulate a float return based on date
 def calculate_value_from_date(date_str):
-    base_date = datetime.strptime("2023-01-01", '%Y-%m-%d')
-    selected_date = datetime.strptime(date_str, '%Y-%m-%d')
-    days_diff = (selected_date - base_date).days
-    return 100 + (days_diff * 0.1)  # A simple float calculation based on the number of days
+    ticker = "AAPL"
+    start_date = "2023-12-01"
+
+    # Create trades object
+    trades_obj = trades(ticker="AAPL", startDate=start_date, endDate="2023-12-05")
+    trades_obj.trades.append(trade('2023-12-01 00:00:00', 'buy', 1))
+    return calculate_pnl_with_real_data(trades_obj, end_date)
 
 @app.route('/')
 def index():
