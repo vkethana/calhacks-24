@@ -36,7 +36,7 @@ function App() {
 
     fetchTrades();
     // eslint-disable-next-line no-console
-    console.log(date, evalDate);
+    console.log(trades);
   }, [date, isLoading]);
 
   return (

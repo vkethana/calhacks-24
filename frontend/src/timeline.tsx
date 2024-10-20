@@ -89,22 +89,22 @@ const Timeline = ({ setDate, setEvalDate }: TimelineProps) => {
 
   useEffect(() => {
     const { month, day } = getMonthAndDay(value);
-    setDate(`2022-${month}-${String(day).padStart(2, "0")}`); // Example for 2023
+    setEvalDate(`2022-${month}-${String(day).padStart(2, "0")}`);
   }, [value]);
 
   useEffect(() => {
     if (initState) {
+      const { month, day } = getMonthAndDay(value);
+      setDate(`2022-${month}-${String(day).padStart(2, "0")}`); // Example for 2023
       setTradingMarker(value);
       setInitState(false);
     }
     if (playing) {
-      const { month, day } = getMonthAndDay(value);
-      setEvalDate(`2022-${month}-${String(day).padStart(2, "0")}`);
       const intervalId = setInterval(() => {
         if (value <= 365) {
           setValue((prevValue) => prevValue + 1);
         }
-      }, 1000); // Increment value every second (1000 ms)
+      }, 2000); // Increment value every second (1000 ms)
 
       return () => clearInterval(intervalId);
     }

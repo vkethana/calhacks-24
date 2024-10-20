@@ -1,13 +1,17 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from utils import trade
 from eval_model import calculate_pnl_with_real_data
 from llm_trader import run_llm_trade
 import json
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/api/*": {
+    "origins": "*",
+    "methods": ["GET", "POST", "OPTIONS"],  # Specify allowed methods
+    "allow_headers": ["Content-Type", "Authorization"],  # Specify allowed headers
+}})
 # Load news data from the JSON file
 with open('wsj_2022_headlines.json') as news_file:
     news_data = json.load(news_file)
@@ -23,6 +27,7 @@ def get_news():
 
     return jsonify(news_data.get(trading_date, ["ERROR: No news data for " + trading_date]))
 
+@cross_origin()
 @app.route('/api/get_trades_and_pnl', methods=['POST', 'OPTIONS'])
 def get_trades_and_pnl():
     if request.method == 'OPTIONS':
@@ -66,7 +71,13 @@ def get_trades_and_pnl():
         return jsonify({
             'trades': trades_data,
             'result': pnl_result
-        })
+        }, headers={
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": '*',
+            "Access-Control-Allow-Methods": 'PUT, GET, POST, DELETE, OPTIONS',
+            "Access-Control-Allow-Headers": 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+        },
+        content_type='application/json')
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
     except Exception as e:
