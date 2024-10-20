@@ -36,16 +36,6 @@ class TestCalculatePnL(unittest.TestCase):
         pnl = calculate_pnl(self.trades_obj, self.stock_prices, endDate)
         self.assertAlmostEqual(pnl, expected_pnl, places=2)
         
-    # def test_sell_more_than_available(self):
-    #     endDate = '2023-12-06'
-        
-    #     # Add another trade to sell more than available
-    #     self.trades_obj.trades.append(trade('2023-12-04 00:00:00', 'sell', 10, 110))
-        
-    #     with self.assertRaises(ValueError) as context:
-    #         calculate_pnl(self.trades_obj, self.stock_prices, endDate)
-        
-    #     self.assertEqual(str(context.exception), "Sell volume exceeds available buy volume.")
         
     def test_no_price_data_for_trade_date(self):
         endDate = '2023-12-06'

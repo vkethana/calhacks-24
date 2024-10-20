@@ -1,58 +1,68 @@
 import yfinance as yf
 from datetime import datetime, timedelta
-from utils import *
 import pandas as pd
+from utils import trade  # Assuming trade class is defined in utils
 
-
-
-def calculate_pnl_with_real_data(trades_obj: trades, endDate: datetime) -> float:
+def calculate_pnl_with_real_data(trade_list: list[trade], endDate: datetime) -> float:
     """
-    Calculate the realized PnL from a trades object using real stock price data.
+    Calculate the realized PnL from a list of trades using real stock price data.
 
     Args:
-        trades_obj (trades): A trades object containing a list of trades.
-        endDate (str): The end date for calculating PnL (format: 'YYYY-MM-DD').
+        trade_list (list[trade]): A list containing trade objects.
+        endDate (datetime): The end date for calculating PnL.
 
     Returns:
         float: The realized PnL of the trades.
     """
-    # Fetch historical stock price data using yfinance
-    stock_data = yf.download(trades_obj.ticker, start=trades_obj.startDate, end=(endDate + timedelta(days=1)).strftime('%Y-%m-%d'))
-    
-    # Ensure the stock data is valid
-    if stock_data.empty:
-        raise ValueError(f"No stock data available for {trades_obj.ticker} in the specified range")
+    # Create a dictionary to store stock data for each ticker
+    stock_data_dict = {}
 
-    # Extract relevant data (dates and adjusted close prices)
-    stock_data = stock_data[['Adj Close']].reset_index()  # Only keep adjusted close prices
+    # Fetch historical stock price data for each unique ticker in trade_list
+    for trade in trade_list:
+        ticker = trade.ticker  # Get the ticker from the trade object
+        start_date = trade.time.strftime('%Y-%m-%d')  # Use the trade date as start date
+        # print("START DATE FOR DATA: ", start_date)
+        # print("END DATE FOR DATA: ", (endDate + timedelta(days=1)).strftime('%Y-%m-%d'))
+        # Check if we already fetched data for this ticker
+        if ticker not in stock_data_dict:
+            stock_data = yf.download(ticker, start=start_date, end=(endDate + timedelta(days=1)).strftime('%Y-%m-%d'))
+            
+            # print("GOT BACK THE FOLLOWING STOCK DATA", stock_data, ticker)
+            
+            # Ensure the stock data is valid
+            if stock_data.empty:
 
-    # Display the stock data in a readable format
-    print("\nDownloaded Stock Data (Date, Adjusted Close Price):\n")
-    print(stock_data.to_string(index=False, header=["Date", "Adj Close"]))
+                raise ValueError(f"No stock data available for {ticker} in the specified range")
 
-    # Convert stock data to the format required by `calculate_pnl`
-    stock_data_array = stock_data[['Date', 'Adj Close']].values.tolist()
-    stock_data_for_pnl = [[row[0].strftime('%Y-%m-%d'), row[1]] for row in stock_data_array]
+            # Extract relevant data (dates and adjusted close prices)
+            stock_data = stock_data[['Adj Close']].reset_index()
+            stock_data_array = stock_data[['Date', 'Adj Close']].values.tolist()
+            stock_data_dict[ticker] = [[row[0].strftime('%Y-%m-%d'), row[1]] for row in stock_data_array]
+    # Use the existing `calculate_pnl` function for each ticker
+    total_pnl = 0.0
+    for t in trade_list:
+        print("- IM GONNA PASS IN DATA DICT", stock_data_dict, "for ticker", t.ticker)
+        total_pnl += calculate_pnl([t], stock_data_dict[t.ticker], endDate.strftime('%Y-%m-%d'))
+        
+    print("- FINAL PNL", total_pnl)
+    return total_pnl
 
-    # Use the existing `calculate_pnl` function
-    return calculate_pnl(trades_obj, stock_data_for_pnl, endDate.strftime('%Y-%m-%d'))
-
-def calculate_pnl(trades_obj, stock_data, endDate):
-    """calcualtes pnl given trades, truth, and end date
+def calculate_pnl(trade_list: list[trade], stock_data: list[list], endDate: str) -> float:
+    """Calculates PnL given trades, stock price data, and end date.
 
     Args:
-        trades_obj (trades): trades object containing trades
-        stock_data (2d array): n by 2 array of string(dates) and prices
-        endDate (string): end date
+        trade_list (list[trade]): List of trade objects containing trades.
+        stock_data (list[list]): n by 2 array of string(dates) and prices.
+        endDate (string): End date.
 
     Raises:
-        ValueError: _description_
-        ValueError: _description_
+        ValueError: If stock price data is missing for the specified dates.
 
     Returns:
-        double: PnL
+        float: PnL.
     """
     
+    print("- recieved input", trade_list, stock_data, endDate)
     
     # Convert the 2D list to a dictionary for easy price lookup
     stock_prices = {str(time): price for time, price in stock_data}
@@ -60,32 +70,35 @@ def calculate_pnl(trades_obj, stock_data, endDate):
     # Get the end date price
     end_date_price = stock_prices.get(endDate)
     
-    # print("endprice", end_date_price)
-    
     if end_date_price is None:
         raise ValueError(f"No stock price data available for {endDate}")
 
     total_unrealized_pnl = 0
 
-    for trade in trades_obj.trades:
+    for trade in trade_list:
         action = trade.action
         volume = trade.volume
         
         # Convert the timestamp to a string in the same format
-        timestamp = pd.to_datetime(trade.timestamp).strftime('%Y-%m-%d')
+        time = pd.to_datetime(trade.time).strftime('%Y-%m-%d')
 
         # Ensure type consistency in the comparison
-        if timestamp in stock_prices:
-            trade_price = stock_prices[timestamp]
+        print(stock_prices)
+        print(time)
+        if time in stock_prices:
+            trade_price = stock_prices[time]
         else:
-            raise ValueError(f"No stock price data available for {timestamp}")
+            print("VALUE ERROR: PRICE DATE NOT FOUND IN HERE")
+            print("*"*50)
+            raise ValueError(f"No stock price data available for {time}")
 
         # Calculate the unrealized PnL
         if action == 'buy':
+            print("currently addressing buy command")
             total_unrealized_pnl += (end_date_price - trade_price) * volume  # Loss if sold at end price
-            # print("buy profit", total_unrealized_pnl, trade_price, end_date_price, volume)
         elif action == 'sell':
+            print("currently addressing sell commands")
             total_unrealized_pnl -= (end_date_price - trade_price) * volume  # Gain if sold at end price
-            # print("sell profit", total_unrealized_pnl, trade_price, end_date_price, volume)
 
+    print("UNREALIZED PNL", total_unrealized_pnl)
     return total_unrealized_pnl
