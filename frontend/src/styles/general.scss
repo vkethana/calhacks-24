@@ -210,6 +210,7 @@ $borderColor: darkgray;
 .leaderboard-parent {
   display: flex;
   flex-direction: column; /* Stack rows vertically */
+  overflow: auto;
   color: $text;
   max-height: calc(100% - 40px);
   height: max-content;
@@ -219,6 +220,7 @@ $borderColor: darkgray;
     justify-content: flex-start; /* Align items to the left */
     padding: 10px; /* Add padding for better spacing */
     min-width: 100%;
+    min-height: 50px;
     width: max-content;
     height: max-content;
 
@@ -228,6 +230,7 @@ $borderColor: darkgray;
       z-index: 1;
       background-color: $primary;
       font-weight: bold;
+      min-height: unset;
       margin-bottom: 10px;
       border-bottom: 1px solid darkgray;
     }
