@@ -20,7 +20,6 @@ $borderColor: darkgray;
   width: 100vw;
   padding: 20px 20px;
   margin: auto;
-  max-width: 2000px;
   background-color: $bgColor;
   font-family: "Lekton", sans-serif;
 }
@@ -73,16 +72,12 @@ $borderColor: darkgray;
   display: inline-flex;
 }
 
-.headlines-wrapper {
-  height: 100%;
-  overflow: auto;
-}
-
 .headlines-parent {
   display: flex;
   flex-direction: column;
   gap: 10px;
   overflow: auto;
+  height: calc(100% - 60px);
   max-height: calc(100% - 60px);
 
   & .headline {
@@ -215,9 +210,9 @@ $borderColor: darkgray;
 .leaderboard-parent {
   display: flex;
   flex-direction: column; /* Stack rows vertically */
-  overflow: auto;
   color: $text;
   max-height: calc(100% - 40px);
+  height: max-content;
 
   & .ranking {
     display: flex; /* Use flexbox for horizontal alignment */
@@ -225,6 +220,7 @@ $borderColor: darkgray;
     padding: 10px; /* Add padding for better spacing */
     min-width: 100%;
     width: max-content;
+    height: max-content;
 
     &.pinned {
       position: sticky;
