@@ -20,7 +20,6 @@ $borderColor: darkgray;
   width: 100vw;
   padding: 20px 20px;
   margin: auto;
-  max-width: 2000px;
   background-color: $bgColor;
   font-family: "Lekton", sans-serif;
 }
@@ -73,17 +72,13 @@ $borderColor: darkgray;
   display: inline-flex;
 }
 
-.headlines-wrapper {
-  height: 100%;
-  overflow: hidden;
-}
-
 .headlines-parent {
   display: flex;
   flex-direction: column;
   gap: 10px;
   overflow: auto;
-  max-height: calc(100% - 40px);
+  height: calc(100% - 60px);
+  max-height: calc(100% - 60px);
 
   & .headline {
     background-color: $secondary;
@@ -195,6 +190,13 @@ $borderColor: darkgray;
       &.desc {
         font-size: 16px;
       }
+
+      &.green {
+        color: rgb(196, 255, 196);
+      }
+      &.red {
+        color: rgb(255, 138, 138);
+      }
     }
 
     & .subtitle {
@@ -211,13 +213,16 @@ $borderColor: darkgray;
   overflow: auto;
   color: $text;
   max-height: calc(100% - 40px);
+  height: max-content;
 
   & .ranking {
     display: flex; /* Use flexbox for horizontal alignment */
     justify-content: flex-start; /* Align items to the left */
     padding: 10px; /* Add padding for better spacing */
     min-width: 100%;
+    min-height: 50px;
     width: max-content;
+    height: max-content;
 
     &.pinned {
       position: sticky;
@@ -225,6 +230,7 @@ $borderColor: darkgray;
       z-index: 1;
       background-color: $primary;
       font-weight: bold;
+      min-height: unset;
       margin-bottom: 10px;
       border-bottom: 1px solid darkgray;
     }
